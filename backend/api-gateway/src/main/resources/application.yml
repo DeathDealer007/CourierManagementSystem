@@ -1,0 +1,94 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: apigateway-service
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+
+        - id: gateway-auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/gateway/auth/**
+          filters:
+            - RewritePath=/gateway/auth(?<segment>/?.*), /api/auth$\{segment}
+
+        - id: delivery-service
+          uri: lb://DELIVERY-SERVICE
+          predicates:
+            - Path=/api/deliveries/**, /deliveries/**
+
+        - id: gateway-delivery-service
+          uri: lb://DELIVERY-SERVICE
+          predicates:
+            - Path=/gateway/deliveries/**
+          filters:
+            - RewritePath=/gateway/deliveries(?<segment>/?.*), /deliveries$\{segment}
+
+        - id: tracking-service
+          uri: lb://TRACKING-SERVICE
+          predicates:
+            - Path=/api/tracking/**, /tracking/**
+
+        - id: gateway-tracking-service
+          uri: lb://TRACKING-SERVICE
+          predicates:
+            - Path=/gateway/tracking/**
+          filters:
+            - RewritePath=/gateway/tracking(?<segment>/?.*), /tracking$\{segment}
+
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/api/admin/**, /admin/**
+
+        - id: gateway-admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/gateway/admin/**
+          filters:
+            - RewritePath=/gateway/admin(?<segment>/?.*), /admin$\{segment}
+
+eureka:
+  instance:
+    preferIpAddress: false
+    hostname: api-gateway
+    port: 8090
+    nonSecurePort: 8090
+    nonSecurePortEnabled: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui
+    url: /v3/api-docs
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans

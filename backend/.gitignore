@@ -1,0 +1,42 @@
+# Environment variables and secrets
+.env
+*/.env
+.env.local
+*/.env.local
+
+# Eclipse IDE files
+.metadata/
+.project
+.classpath
+.settings/
+
+# Maven target directories
+target/
+*/target/
+
+# Logs
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Node modules (if any)
+node_modules/
+
+# Docker volumes
+volumes/
+
+# Temporary files
+*.tmp
+*.swp
+*~
